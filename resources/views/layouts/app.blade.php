@@ -17,9 +17,6 @@
     <a class="skip" href="#konten">Lewati ke konten</a>
     @yield('content')
     <script src="{{ asset('js/portfolio.js') }}" defer></script>
-    <script>
-        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
+    @vite(['resources/js/app.js'])
 </body>
 </html>
