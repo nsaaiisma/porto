@@ -21,7 +21,7 @@ class Profile extends Model
 
     public function getPhotoUrlAttribute(): ?string
     {
-        return $this->photo ? Storage::url($this->photo) : null;
+        return $this->photo_data ?: ($this->photo ? Storage::url($this->photo) : null);
     }
 
     /** Daftar peran untuk efek mengetik di halaman depan. */

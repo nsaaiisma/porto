@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class ProjectController extends Controller
@@ -27,9 +27,12 @@ class ProjectController extends Controller
         $data = $this->validated($request);
         $data['slug'] = $this->uniqueSlug($data['title']);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('projects', 'public');
-        }
+        // Simpan gambar sebagai data URI di DB (permanen di D1),
+        // bukan file di disk (ephemeral di Vercel).
+        $data['image'] = null;
+        $data['image_data'] = $request->hasFile('image')
+            ? self::toDataUri($request->file('image'))
+            : null;
 
         Project::create($data);
 
@@ -46,11 +49,11 @@ class ProjectController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('image')) {
-            $this->deleteImage($project);
-            $data['image'] = $request->file('image')->store('projects', 'public');
-        } elseif ($request->boolean('remove_image')) {
-            $this->deleteImage($project);
             $data['image'] = null;
+            $data['image_data'] = self::toDataUri($request->file('image'));
+        } elseif ($request->boolean('remove_image')) {
+            $data['image'] = null;
+            $data['image_data'] = null;
         }
 
         $project->update($data);
@@ -60,7 +63,6 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        $this->deleteImage($project);
         $project->delete();
 
         return back()->with('success', 'Proyek dihapus.');
@@ -100,10 +102,10 @@ class ProjectController extends Controller
         return $slug;
     }
 
-    private function deleteImage(Project $project): void
+    private static function toDataUri(UploadedFile $file): string
     {
-        if ($project->image) {
-            Storage::disk('public')->delete($project->image);
-        }
+        return 'data:'.$file->getMimeType().';base64,'.base64_encode(
+            file_get_contents($file->getRealPath())
+        );
     }
 }

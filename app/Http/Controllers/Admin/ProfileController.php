@@ -7,7 +7,6 @@ use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -39,17 +38,17 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            if ($profile->photo) {
-                Storage::disk('public')->delete($profile->photo);
-            }
-            $data['photo'] = $request->file('photo')->store('profile', 'public');
+            $data['photo'] = null;
+            $data['photo_data'] = 'data:'.$request->file('photo')->getMimeType().';base64,'.base64_encode(
+                file_get_contents($request->file('photo')->getRealPath())
+            );
         } else {
             unset($data['photo']);
         }
 
-        if ($request->boolean('remove_photo') && $profile->photo && ! $request->hasFile('photo')) {
-            Storage::disk('public')->delete($profile->photo);
+        if ($request->boolean('remove_photo') && ($profile->photo_data || $profile->photo) && ! $request->hasFile('photo')) {
             $data['photo'] = null;
+            $data['photo_data'] = null;
         }
 
         $profile->update($data);

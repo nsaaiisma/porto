@@ -9,7 +9,7 @@ class Project extends Model
 {
     protected $fillable = [
         'title', 'slug', 'category', 'summary', 'description', 'tech_stack',
-        'image', 'demo_url', 'repo_url', 'is_featured', 'is_published', 'sort_order',
+        'image', 'image_data', 'demo_url', 'repo_url', 'is_featured', 'is_published', 'sort_order',
     ];
 
     protected $casts = [
@@ -19,7 +19,9 @@ class Project extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image ? Storage::url($this->image) : null;
+        // Blob data URI (disimpan di DB, permanen) diutamakan;
+        // path file lama jadi fallback.
+        return $this->image_data ?: ($this->image ? Storage::url($this->image) : null);
     }
 
     public function getTechListAttribute(): array
