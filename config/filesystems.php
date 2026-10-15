@@ -33,7 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Never web-serve private files. Public uploads are served
+            // from the "public" disk below via GET /storage/{path}.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],
@@ -43,6 +45,9 @@ return [
             // On Vercel the repo filesystem is read-only; point this at /tmp
             // via PUBLIC_DISK_ROOT so uploads don't 500. Ephemeral per instance.
             'root' => env('PUBLIC_DISK_ROOT', storage_path('app/public')),
+            // Serve uploads via Laravel's GET /storage/{path} route, reading
+            // from this disk's root ("/tmp/..." on Vercel).
+            'serve' => true,
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
