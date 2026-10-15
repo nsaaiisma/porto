@@ -40,7 +40,9 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // On Vercel the repo filesystem is read-only; point this at /tmp
+            // via PUBLIC_DISK_ROOT so uploads don't 500. Ephemeral per instance.
+            'root' => env('PUBLIC_DISK_ROOT', storage_path('app/public')),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,

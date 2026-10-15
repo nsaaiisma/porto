@@ -21,7 +21,7 @@
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
 
-foreach (['/tmp/views', '/tmp/sessions', '/tmp/cache', '/tmp/storage'] as $dir) {
+foreach (['/tmp/views', '/tmp/sessions', '/tmp/cache', '/tmp/storage', '/tmp/public-storage'] as $dir) {
     if (! is_dir($dir)) {
         @mkdir($dir, 0755, true);
     }

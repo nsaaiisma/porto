@@ -32,6 +32,7 @@
         "QUEUE_CONNECTION": "sync",
         "DB_CONNECTION": "sqlite",
         "DB_DATABASE": "/tmp/database.sqlite",
+        "PUBLIC_DISK_ROOT": "/tmp/public-storage",
         "VIEW_COMPILED_PATH": "/tmp/views",
         "APP_MAINTENANCE_DRIVER": "array",
         "APP_CONFIG_CACHE": "/tmp/config.php",
