@@ -38,6 +38,8 @@ $kernel->bootstrap();
 
 $dbPath = (string) env('DB_DATABASE', '/tmp/database.sqlite');
 
+error_log('[vercel-boot] DB_CONNECTION='.env('DB_CONNECTION', 'sqlite'));
+
 try {
     if (env('DB_CONNECTION', 'sqlite') === 'sqlite' && str_starts_with($dbPath, '/tmp')) {
         if (! file_exists($dbPath)) {
