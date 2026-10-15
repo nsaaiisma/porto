@@ -32,6 +32,23 @@ return [
 
     'connections' => [
 
+        'd1' => [
+            // Cloudflare D1 via REST API. Credentials come from env, see .env.example.
+            'driver' => 'd1',
+            'd1_driver' => env('CF_D1_DRIVER', 'rest'),
+            'prefix' => '',
+            'database' => env('CF_D1_DATABASE_ID', ''),
+            'api' => 'https://api.cloudflare.com/client/v4',
+            'auth' => [
+                'token' => env('CF_D1_API_TOKEN', ''),
+                'account_id' => env('CF_D1_ACCOUNT_ID', ''),
+            ],
+            'timeout' => env('CF_D1_TIMEOUT', 10),
+            'connect_timeout' => env('CF_D1_CONNECT_TIMEOUT', 5),
+            'retries' => env('CF_D1_RETRIES', 2),
+            'retry_delay' => env('CF_D1_RETRY_DELAY', 100),
+        ],
+
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
